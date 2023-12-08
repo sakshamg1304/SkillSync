@@ -1,12 +1,12 @@
-import mongoose, { Mongoose } from "mongoose"
+const mongoose = require("mongoose");
 
 const adminSchema = new mongoose.Schema({
-     name: String, 
+     username: String, 
      password : String
     });
 
 const userSchema = new mongoose.Schema({
-    name: String,
+    username: String,
     password : String,
     purchasedCourses : [{type: mongoose.Schema.Types.ObjectId, ref: 'Course'}]
 })

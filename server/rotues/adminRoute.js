@@ -1,12 +1,12 @@
-import express, { router } from "express";
-import mongoose from 'mongoose';
-const router = express.Router();
-import { Admin, Course } from "./../db/index";
-import jwt from "jsonwebtoken";
-import authenticateJWT from "../middleware/auth";
+const express = require('express');
+
+const { Course, Admin } = require("../db");
+const jwt = require('jsonwebtoken');
+const { authenticateJWT } = require('./../middleware/auth');
 const dotenv = require("dotenv");
 dotenv.config();
 
+const router = express.Router();
 
 // create admin
 router.post('/signup', async (req, res) => {
@@ -16,8 +16,7 @@ router.post('/signup', async (req, res) => {
     if (!adminExist) {
         const newAdmin = new Admin({ username, password });
         await newAdmin.save();
-
-        const token = jwt.sign({ username, role: 'admin' }, process.env.SECRET);
+        const token = jwt.sign({ username, role: 'admin' }, process.env.SECRET, { expiresIn: '1h' });
         res.json({ message: 'Admin Created Successfully', token });
     }
     else {
@@ -31,7 +30,7 @@ router.post('/login', async (req, res) => {
     const { username, password } = req.headers;
     const adminExist = await Admin.findOne({ username, password });
     if (adminExist) {
-        const token = jwt.sign({ username, role: 'admin' }, process.env.SECRET);
+        const token = jwt.sign({ username, role: 'admin' }, process.env.SECRET, { expiresIn: '1h' });
         res.json({ message: 'Logged in successfully', token });
     } else {
         res.status(403).json({ message: 'Invalid username or password' });
@@ -39,14 +38,8 @@ router.post('/login', async (req, res) => {
 });
 
 // add courses
-router.post('/course', authenticateJWT, async (req, res) => {
-    const { title, desc, price, imageLink } = req.body;
-    const newCourse = await new Course({
-        title,
-        desc,
-        price,
-        imageLink
-    });
+router.post('/courses', authenticateJWT, async (req, res) => {
+    const newCourse = new Course(req.body);
     await newCourse.save();
     res.json({ message: 'Course created successfully', courseId: newCourse.id });
 });
@@ -58,13 +51,13 @@ router.get('/courses', authenticateJWT, async (req, res) => {
 });
 
 // get particular course
-router.get('/course/:courseId', authenticateJWT, (req,res) => {
+router.get('/courses/:courseId', authenticateJWT, async (req, res) => {
     const course = await Course.findById(req.params.courseId);
-    res.json({course});
+    res.json({ course });
 })
 
 //update courses
-router.put('/course/:courseId', authenticateJWT, async (req, res) => {
+router.put('/courses/:courseId', authenticateJWT, async (req, res) => {
     const course = await Course.findByIdAndUpdate(req.params.courseId, req.body, { new: true });
     if (course) {
         res.json({ message: "Course Update Successfully" });

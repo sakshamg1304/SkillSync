@@ -1,19 +1,30 @@
-import express, { json } from 'express';
-import { connect } from 'mongoose';
-import cors from 'cors';
+const express = require('express');
+const mongoose = require('mongoose');
+const cors = require('cors');
+const dotenv = require("dotenv");
+const adminRoute = require('./rotues/adminRoute');
+const userRoute = require('./rotues/userRoute');
+dotenv.config();
 
 const app = express();
 
-app.use(cors);
-app.use(json);
+app.use(cors());
+app.use(express.json());
+
 
 //routes imports
-app.use("/admin",adminRoute);
-app.use("/user",userRoute);
+app.use("/admin", adminRoute);
+app.use("/user", userRoute);
 
 
-// mpngoDB connection 
-connect()
+// mongoDB connection 
+mongoose.connect(process.env.MONGO_URL)
+    .then(() => {
+        console.log("MongoDB Connected")
+    })
+    .catch((err) => {
+    console.log(err);
+    });
 
 
 

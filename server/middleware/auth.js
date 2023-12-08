@@ -1,12 +1,12 @@
-import jwt from 'jsonwebtoken';
+const jwt = require('jsonwebtoken');
 const dotenv = require("dotenv");
 
 dotenv.config();
 
-const authenticateJWT = (req,res,next) =>{
-    const authHeader = req.body.authorization;
+const authenticateJWT = (req,res,next) => {
+    const authHeader = req.headers.authorization;
     if(authHeader){
-        const token = authHeader.split('')[1];
+        const token = authHeader.split(' ')[1];
         jwt.verify(token,process.env.SECRET, (err,user) => {
             if(err) {
                 res.status(403).json();
@@ -19,4 +19,4 @@ const authenticateJWT = (req,res,next) =>{
      }
 };
 
-export default authenticateJWT;
+module.exports = { authenticateJWT }
