@@ -23,7 +23,7 @@ router.post('/signup', async (req, res) => {
 
 //login User
 router.post('/login', async (req, res) => {
-    const { username, password } = req.headers;
+    const { username, password } = req.body;
     const userExists = await User.findOne({ username, password });
     if (userExists) {
         const token = jwt.sign({ username, role: 'user' }, process.env.SECRET);

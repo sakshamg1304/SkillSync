@@ -8,6 +8,20 @@ dotenv.config();
 
 const router = express.Router();
 
+
+//profile route
+router.get("/me", authenticateJWT ,async(req,res) => {
+    const admin = await Admin.findOne({ username: req.user.username });
+    if (!admin) {
+      res.status(403).json({msg: "Admin doesnt exist"})
+      return
+    }
+    res.json({
+        username: admin.username
+    });
+})
+
+
 // create admin
 router.post('/signup', async (req, res) => {
     const { username, password } = req.body;
@@ -27,7 +41,7 @@ router.post('/signup', async (req, res) => {
 
 //login admin
 router.post('/login', async (req, res) => {
-    const { username, password } = req.headers;
+    const { username, password } = req.body;
     const adminExist = await Admin.findOne({ username, password });
     if (adminExist) {
         const token = jwt.sign({ username, role: 'admin' }, process.env.SECRET, { expiresIn: '1h' });
