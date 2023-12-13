@@ -9,13 +9,13 @@ const authenticateJWT = (req,res,next) => {
         const token = authHeader.split(' ')[1];
         jwt.verify(token,process.env.SECRET, (err,user) => {
             if(err) {
-                res.status(403).json();
+                return res.sendStatus(403);
             }
             req.user = user;
             next();
         });   
     } else {
-        res.status(401).json();
+        res.sendStatus(401);
      }
 };
 

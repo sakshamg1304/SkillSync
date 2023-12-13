@@ -60,7 +60,9 @@ router.post('/courses', authenticateJWT, async (req, res) => {
 
 //get all courses
 router.get('/courses', authenticateJWT, async (req, res) => {
+    console.log("here");
     const courses = await Course.find({});
+    console.log(courses);
     res.json({ courses });
 });
 

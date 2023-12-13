@@ -1,3 +1,5 @@
+import { Button } from "@mui/base";
+import { Card, CardActions, CardContent, CardMedia, Typography } from "@mui/material";
 import axios from "axios";
 import { useState } from "react";
 import { useEffect } from "react";
@@ -6,10 +8,15 @@ function GetCourse() {
     const [courses, setCourses ] = useState([]);
 
     useEffect(()=>{
-        axios.get("http://localhost:3000/admin/courses/").then((res) => {
-            setCourses(res);
+        axios.get("http://localhost:3000/admin/courses/",{
+            headers : {
+                "Authorization" : "Bearer " + localStorage.getItem("token"),
+            }
+        }).then((res) => {
+            setCourses(res.data);
         });
-    });
+        
+    },[]);
 
     return (
         <Card sx={{ maxWidth: 345 }}>

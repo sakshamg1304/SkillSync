@@ -16,6 +16,7 @@ function Signup() {
             }
         });
         localStorage.setItem('token', res.data.token);
+        window.location = "/";
      };
 
     return (
