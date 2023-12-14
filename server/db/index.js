@@ -13,7 +13,7 @@ const userSchema = new mongoose.Schema({
 
 const courseSchema = new mongoose.Schema ({
     title: String,
-    desc : String,
+    description : String,
     published : Boolean,
     imageLink : String,
     price: Number
